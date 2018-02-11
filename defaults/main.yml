@@ -1,0 +1,5 @@
+---
+kernel_version_major: 4.14
+kernel_version_minor: 18
+git_branch: "fedora-kernel-lts-{{ kernel_version_major }}"
+rpmbuild_sources_dir: "{{ ansible_env['HOME'] }}/rpmbuild/SOURCES"

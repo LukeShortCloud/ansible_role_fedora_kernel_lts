@@ -1,0 +1,12 @@
+---
+build_package_dependencies:
+  - fedpkg
+  - fedora-packager
+  - ncurses-devel
+  - pesign
+  - rpmdevtools
+  # required for building perf-man:
+  - asciidoc
+  - xmlto
+  # required for "dnf builddep"
+  - yum-utils

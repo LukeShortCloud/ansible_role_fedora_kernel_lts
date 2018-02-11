@@ -1,0 +1,62 @@
+---
+# Packages listed from here will be installed:
+# https://fedoraproject.org/wiki/Building_a_custom_kernel
+- name: Installing prerequisites for buiding the kernel RPM on Fedora
+  package:
+    name: "{{ item }}"
+    state: "present"
+  with_flattened:
+    - "{{ build_package_dependencies }}"
+  become: true
+  become_method: sudo
+
+- name: Creating the rpmbuild directories
+  file:
+    dest: "{{ rpmbuild_sources_dir }}"
+    state: directory
+
+- name: Download the fedora-kernel-lts repository
+  git:
+    repo: https://github.com/ekultails/fedora-kernel-lts.git
+    dest: "{{ rpmbuild_sources_dir }}"
+    version: "{{ git_branch }}"
+
+- name: Installing build dependencies for the Linux kernel
+  shell: "dnf builddep {{ rpmbuild_sources_dir }}/kernel.spec"
+  become: true
+  become_method: sudo
+
+- name: "Downloading the Linux kernel {{ kernel_version_major }} source code"
+  get_url:
+     url: "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-{{ kernel_version_major }}.tar.xz"
+     dest: "{{ rpmbuild_sources_dir }}"
+
+- name: "Downloading the Linux kernel {{ kernel_version_major }}.{{ kernel_version_minor }} patches"
+  get_url:
+    url: "https://cdn.kernel.org/pub/linux/kernel/v4.x/patch-{{ kernel_version_major }}.{{ kernel_version_minor }}.xz"
+    dest: "{{ rpmbuild_sources_dir }}"
+
+- name: Making a directory to extract the Linux kernel source code into
+  file:
+    dest: "{{ rpmbuild_sources_dir }}/kernel"
+    state: directory
+
+- name: Extracting the Linux kernel source code
+  unarchive:
+    src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.tar.xz"
+    dest: "{{ rpmbuild_sources_dir }}"
+    remote_src: true
+
+# This is required to be pre-built for the RPM per: https://fedoraproject.org/wiki/Kernel/Rawhide
+- name: Building the perf-man documentation
+  shell: make man
+  args:
+    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
+
+- name: Creating an archive of the perf-man pages
+  shell: "tar -czvf {{ rpmbuild_sources_dir }}/perf-man-{{ kernel_version_major }}.tar.gz *.1"
+  args:
+    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
+
+- name: Building the Linux kernel RPM
+  shell: "rpmbuild -ba {{ rpmbuild_sources_dir }}/kernel.spec"
