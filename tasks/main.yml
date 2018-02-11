@@ -74,3 +74,7 @@
 
 - name: Building the Linux kernel RPM
   shell: "rpmbuild -ba {{ rpmbuild_sources_dir }}/kernel.spec"
+  register: rpmbuild_output
+
+- debug:
+    msg: "The total build time was: {{ rpmbuild_output['delta'] }}"
