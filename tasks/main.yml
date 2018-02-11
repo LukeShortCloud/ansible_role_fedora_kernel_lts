@@ -53,6 +53,20 @@
   args:
     chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
 
+- name: Building the kvm_stat documentation
+  shell: make man
+  args:
+    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/kvm/kvm_stat/"
+
+# This is not mentioned in the Rawhide documentation from above.
+# It is required as defined in the "scripts/generate-perf-man.sh"
+# script from the Fedora "kernel" project
+- name: Copying over the kvm_stat man page
+  copy:
+    src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/kvm/kvm_stat/kvm_stat.1"
+    dest: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
+    remote_src: true
+
 - name: Creating an archive of the perf-man pages
   shell: "tar -czvf {{ rpmbuild_sources_dir }}/perf-man-{{ kernel_version_major }}.tar.gz *.1"
   args:
