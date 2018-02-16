@@ -1,5 +1,7 @@
 ---
 kernel_version_major: 4.14
-kernel_version_minor: 18
-git_branch: "fedora-kernel-lts-{{ kernel_version_major }}"
+kernel_version_minor: 19
+#git_branch: "fedora-kernel-lts-{{ kernel_version_major }}"
+# This is the commit for the 4.14.19 release of the fedora-kernel-lts fork.
+git_branch: 553ac927a3291959afaf4813ba50d246764efb21
 rpmbuild_sources_dir: "{{ ansible_env['HOME'] }}/rpmbuild/SOURCES"
