@@ -73,7 +73,7 @@
     chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
 
 - name: Building the Linux kernel RPM
-  shell: "rpmbuild -ba {{ rpmbuild_sources_dir }}/kernel.spec"
+  shell: "rpmbuild -bb --with baseonly --without debuginfo {{ rpmbuild_sources_dir }}/kernel.spec"
   register: rpmbuild_output
 
 - debug:
