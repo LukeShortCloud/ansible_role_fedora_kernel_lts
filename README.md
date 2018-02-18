@@ -28,10 +28,16 @@ None.
     - ansible-role-fedora-kernel-lts
 ```
 
-* Run the Playbook as the local non-root user with privileges to run commands as sudo.
+* Run the Playbook as a non-root user with privileges to install build dependencies.
 
 ```
-$ ansible-playbook --ask-become-pass site.yml
+$ ansible-playbook --become-method sudo --ask-become-pass site.yml
+```
+
+* When re-running the Playbook, installing the dependencies can be skipped.
+
+```
+$ ansible-playbook --skip-tags become site.yml
 ```
 
 ## License

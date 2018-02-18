@@ -8,7 +8,8 @@
   with_flattened:
     - "{{ build_package_dependencies }}"
   become: true
-  become_method: sudo
+  tags:
+    - become
 
 - name: Creating the rpmbuild directories
   file:
@@ -24,7 +25,8 @@
 - name: Installing build dependencies for the Linux kernel
   shell: "dnf builddep {{ rpmbuild_sources_dir }}/kernel.spec"
   become: true
-  become_method: sudo
+  tags:
+    - become
 
 - name: "Downloading the Linux kernel {{ kernel_version_major }} source code"
   get_url:
