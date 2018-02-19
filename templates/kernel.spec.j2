@@ -25,6 +25,8 @@ Summary: The Linux kernel
 %endif
 
 # define buildid .local
+%define packager Luke Short https://github.com/ekultails/fedora-kernel-lts
+%define buildid .lts
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -54,7 +56,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 18
+%define stable_update {{ kernel_version_minor }}
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -410,7 +412,9 @@ BuildRequires: pciutils-devel gettext ncurses-devel
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
 BuildRequires: rpm-build, elfutils
+%if %{defined fedora}
 BuildConflicts: rpm < 4.13.0.1-19
+%endif
 # Most of these should be enabled after more investigation
 %undefine _include_minidebuginfo
 %undefine _find_debuginfo_dwz_opts
@@ -627,9 +631,6 @@ Patch335: arm-exynos-fix-usb3.patch
 
 # 500 - Temp fixes/CVEs etc
 
-# rbhz 1519591 1520764
-Patch500: dccp-CVE-2017-8824-use-after-free-in-DCCP-code.patch
-
 # 550-600 Meltdown and Spectre Fixes
 
 # 600 - Patches for improved Bay and Cherry Trail device support
@@ -664,9 +665,6 @@ Patch634: dma-buf-fix-reservation_object_wait_timeout_rcu-once-more-v2.patch
 
 # rhbz 1539238
 Patch635: Add-support-for-One-by-Wacom-CTL-472-CTL-672.patch
-
-# CVE-2018-5750 rhbz 1539706 1539708
-Patch636: ACPI-sbshc-remove-raw-pointer-from-printk-message.patch
 
 # rhbz 1492664 1492665
 Patch637: 0001-mm-don-t-warn-about-allocations-which-stall-for-too-.patch
@@ -1308,28 +1306,26 @@ CheckConfigs() {
 }
 
 cp %{SOURCE42} .
-# now run oldconfig over all the config files
-for i in *.config
-do
-  cat $i > temp-$i
-  mv $i .config
-  Arch=`head -1 .config | cut -b 3-`
-  make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
+# Generate the new kernel configuration for x86_64 only
+i="kernel-{{ kernel_version_major }}.{{ kernel_version_minor }}-x86_64.config"
+cp -f $i temp-$i
+cp -f $i .config
+Arch='x86_64'
+make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
 %if %{listnewconfig_fail}
-  if [ -s .newoptions ]; then
-    cat .newoptions
-    exit 1
-  fi
+if [ -s .newoptions ]; then
+  cat .newoptions
+  exit 1
+fi
 %endif
-  rm -f .newoptions
-  make ARCH=$Arch oldnoconfig
-  echo "# $Arch" > configs/$i
-  cat .config >> configs/$i
+rm -f .newoptions
+make ARCH=$Arch oldnoconfig
+echo "# $Arch" > configs/$i
+cat .config >> configs/$i
 %if %{configmismatch_fail}
-  CheckConfigs configs/$i temp-$i
+CheckConfigs configs/$i temp-$i
 %endif
-  rm temp-$i
-done
+rm temp-$i
 # end of kernel config
 %endif
 
@@ -2228,6 +2224,17 @@ fi
 #
 #
 %changelog
+* Sun Feb 18 2018 Luke Short <ekultails@gmail.com> - 4.14.20-300
+- Linux v4.14.20
+- Removed support for building packages for processor architectures other than x86_64
+- Partially support debug packages on Enterprise Linux 7 distributions by removing a build dependency on the "rpm" package on distributions that are not Fedora
+- Removed the "ACPI: sbshc: remove raw pointer from printk message" patch (fixed upstream)
+- Removed the "dccp: CVE-2017-8824: use-after-free in DCCP code" patch (fixed upstream)
+
+* Wed Feb 14 2018 Luke Short <ekultails@gmail.com> - 4.14.19-300
+- Linux v4.14.19
+- Forked from the last stable release of the Fedora 4.14 kernel
+
 * Wed Feb 07 2018 Justin M. Forbes <jforbes@fedoraproject.org> - 4.14.18-300
 - Linux v4.14.18
 
