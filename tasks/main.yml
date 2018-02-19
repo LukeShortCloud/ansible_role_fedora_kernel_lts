@@ -16,11 +16,19 @@
     dest: "{{ rpmbuild_sources_dir }}"
     state: directory
 
-- name: Download the fedora-kernel-lts repository
+- name: Download the Fedora kernel repository
   git:
-    repo: https://github.com/ekultails/fedora-kernel-lts.git
+    repo: "{{ git_repository_kernel }}"
     dest: "{{ rpmbuild_sources_dir }}"
-    version: "{{ git_branch }}"
+    version: "{{ git_branch_kernel }}"
+    force: yes
+
+- name: Copying over the custom kernel.spec
+  template:
+    src: kernel.spec.j2
+    dest: "{{ rpmbuild_sources_dir }}/kernel.spec"
+    backup: true
+    force: true
 
 - name: Installing build dependencies for the Linux kernel
   shell: "dnf builddep {{ rpmbuild_sources_dir }}/kernel.spec"

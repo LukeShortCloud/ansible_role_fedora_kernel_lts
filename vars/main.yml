@@ -2,6 +2,7 @@
 build_package_dependencies:
   - fedpkg
   - fedora-packager
+  - kernel-headers
   - ncurses-devel
   - pesign
   - rpmdevtools
