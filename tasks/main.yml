@@ -1,4 +1,7 @@
 ---
+- include_vars:
+    file: "defaults/{{ kernel_type }}.yml"
+
 # Packages listed from here will be installed:
 # https://fedoraproject.org/wiki/Building_a_custom_kernel
 - name: Installing prerequisites for buiding the kernel RPM on Fedora
@@ -25,7 +28,7 @@
 
 - name: Copying over the custom kernel.spec
   template:
-    src: kernel.spec.j2
+    src: kernel_{{ kernel_type }}.spec.j2
     dest: "{{ rpmbuild_sources_dir }}/kernel.spec"
     backup: true
     force: true
@@ -36,14 +39,14 @@
   tags:
     - become
 
-- name: "Downloading the Linux kernel {{ kernel_version_major }} source code"
+- name: "Downloading the Linux kernel {{ kernel_version_major }}.{{ kernel_version_minor }} source code"
   get_url:
-     url: "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-{{ kernel_version_major }}.tar.xz"
+     url: "https://cdn.kernel.org/pub/linux/kernel/v{{ kernel_version_major }}.x/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
      dest: "{{ rpmbuild_sources_dir }}"
 
-- name: "Downloading the Linux kernel {{ kernel_version_major }}.{{ kernel_version_minor }} patches"
+- name: "Downloading the Linux kernel {{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }} patches"
   get_url:
-    url: "https://cdn.kernel.org/pub/linux/kernel/v4.x/patch-{{ kernel_version_major }}.{{ kernel_version_minor }}.xz"
+    url: "https://cdn.kernel.org/pub/linux/kernel/v{{ kernel_version_major }}.x/patch-{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}.xz"
     dest: "{{ rpmbuild_sources_dir }}"
 
 - name: Making a directory to extract the Linux kernel source code into
@@ -53,7 +56,7 @@
 
 - name: Extracting the Linux kernel source code
   unarchive:
-    src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.tar.xz"
+    src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
     dest: "{{ rpmbuild_sources_dir }}"
     remote_src: true
 
@@ -61,26 +64,26 @@
 - name: Building the perf-man documentation
   shell: make man
   args:
-    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
+    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/"
 
 - name: Building the kvm_stat documentation
   shell: make man
   args:
-    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/kvm/kvm_stat/"
+    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/kvm/kvm_stat/"
 
 # This is not mentioned in the Rawhide documentation from above.
 # It is required as defined in the "scripts/generate-perf-man.sh"
 # script from the Fedora "kernel" project
 - name: Copying over the kvm_stat man page
   copy:
-    src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/kvm/kvm_stat/kvm_stat.1"
-    dest: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
+    src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/kvm/kvm_stat/kvm_stat.1"
+    dest: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/"
     remote_src: true
 
 - name: Creating an archive of the perf-man pages
-  shell: "tar -czvf {{ rpmbuild_sources_dir }}/perf-man-{{ kernel_version_major }}.tar.gz *.1"
+  shell: "tar -czvf {{ rpmbuild_sources_dir }}/perf-man-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.gz *.1"
   args:
-    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}/tools/perf/Documentation/"
+    chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/"
 
 - name: Building the Linux kernel RPM
   shell: "rpmbuild -bb --with baseonly --without debuginfo {{ rpmbuild_sources_dir }}/kernel.spec"

@@ -1,7 +1,3 @@
 ---
-kernel_version_major: 4.14
-kernel_version_minor: 20
-git_repository_kernel: https://src.fedoraproject.org/rpms/kernel.git
-# This is the last stable Linux 4.14 release for Fedora 27.
-git_branch_kernel: f0b12d669e8a4da5029c02d14d6a08ae513710ef
-rpmbuild_sources_dir: "{{ ansible_env['HOME'] }}/rpmbuild/SOURCES"
+# Build the "lts" or "stable" Linux kernel.
+kernel_type: lts

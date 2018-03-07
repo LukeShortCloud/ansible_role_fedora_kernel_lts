@@ -1,0 +1,10 @@
+---
+# Follow semantic versioning for the kernel.
+kernel_version_major: 4
+kernel_version_minor: 15
+kernel_version_patch: 7
+kernel_version: "{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}"
+git_repository_kernel: https://src.fedoraproject.org/rpms/kernel.git
+# This is a commit of the stable 4.15 Linux kernel for Fedora 27.
+git_branch_kernel: 58c4aaf0751b7e19fafe8da27b7cc978c117185b
+rpmbuild_sources_dir: "{{ ansible_env['HOME'] }}/rpmbuild/SOURCES"
