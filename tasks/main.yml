@@ -85,6 +85,14 @@
   args:
     chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/"
 
+- name: Copying over the ACS override patch
+  copy:
+    src: "acs_override_{{ kernel_type }}.patch"
+    dest: "{{ rpmbuild_sources_dir }}"
+    force: True
+  # This is only supported for the LTS kernel currently.
+  when: kernel_type == "lts"
+
 - name: Building the Linux kernel RPM
   shell: "rpmbuild -bb --with baseonly --without debuginfo {{ rpmbuild_sources_dir }}/kernel.spec"
   register: rpmbuild_output

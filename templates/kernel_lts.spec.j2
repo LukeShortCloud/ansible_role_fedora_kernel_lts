@@ -56,7 +56,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update {{ kernel_version_minor }}
+%define stable_update {{ kernel_version_patch }}
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -618,10 +618,6 @@ Patch321: bcm283x-dma-mapping-skip-USB-devices-when-configuring-DMA-during-probe
 # bcm2837 bluetooth support
 Patch323: bcm2837-bluetooth-support.patch
 
-# Generic fixes and enablement for Socionext SoC and 96board
-# https://patchwork.kernel.org/patch/9980861/
-Patch331: PCI-aspm-deal-with-missing-root-ports-in-link-state-handling.patch
-
 # https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=synquacer-netsec
 Patch332: arm64-socionext-96b-enablement.patch
 
@@ -651,23 +647,19 @@ Patch621: drm-i915-Boost-GPU-clocks-if-we-miss-the-pageflip-s-vblank.patch
 # rhbz 1509461
 Patch625: v3-2-2-Input-synaptics---Lenovo-X1-Carbon-5-should-use-SMBUS-RMI.patch
 
-# Fixes for QXL issues
-Patch627: qxl-fixes.patch
-
 # rhbz 1462175
 Patch628: HID-rmi-Check-that-a-device-is-a-RMI-device-before-c.patch
 
 # rhbz1514969
 Patch633: 0001-platform-x86-dell-laptop-Filter-out-spurious-keyboar.patch
 
-# Fix crash on Xwayland using nouveau
-Patch634: dma-buf-fix-reservation_object_wait_timeout_rcu-once-more-v2.patch
-
 # rhbz 1539238
 Patch635: Add-support-for-One-by-Wacom-CTL-472-CTL-672.patch
 
 # rhbz 1492664 1492665
 Patch637: 0001-mm-don-t-warn-about-allocations-which-stall-for-too-.patch
+
+Patch1000: acs_override_lts.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1307,7 +1299,7 @@ CheckConfigs() {
 
 cp %{SOURCE42} .
 # Generate the new kernel configuration for x86_64 only
-i="kernel-{{ kernel_version_major }}.{{ kernel_version_minor }}-x86_64.config"
+i="kernel-{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}-x86_64.config"
 cp -f $i temp-$i
 cp -f $i .config
 Arch='x86_64'
@@ -2224,6 +2216,13 @@ fi
 #
 #
 %changelog
+* Tue Mar 06 2018 Luke Short <ekultails@gmail.com> - 4.14.25-300
+- Linux v4.14.25
+- Removed the "drm/qxl: replace QXL_INFO with DRM_DEBUG_DRIVER" patch (fixed upstream)
+- Removed the "dma-buf: fix reservation_object_wait_timeout_rcu once more v2" patch (fixed upstream)
+- Removed the "PCI: aspm: deal with missing root ports in link state handling" patch (fixed upstream)
+- Add the ACS patch for isolating IOMMU groups (forked from https://aur.archlinux.org/cgit/aur.git/plain/add-acs-overrides.patch?h=linux-vfio)
+
 * Sun Feb 18 2018 Luke Short <ekultails@gmail.com> - 4.14.20-300
 - Linux v4.14.20
 - Removed support for building packages for processor architectures other than x86_64
