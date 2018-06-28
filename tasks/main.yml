@@ -28,7 +28,7 @@
 
 - name: Copying over the custom kernel.spec
   template:
-    src: kernel_{{ kernel_type }}.spec.j2
+    src: "kernel_{{ kernel_type }}-{{ kernel_version_major }}.{{ kernel_version_minor }}.spec.j2"
     dest: "{{ rpmbuild_sources_dir }}/kernel.spec"
     backup: true
     force: true
@@ -39,15 +39,27 @@
   tags:
     - become
 
+- name: Verifing if the Linux kernel source code has already been downloaded
+  stat:
+    path: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
+  register: kernel_source_file
+
 - name: "Downloading the Linux kernel {{ kernel_version_major }}.{{ kernel_version_minor }} source code"
   get_url:
-     url: "https://cdn.kernel.org/pub/linux/kernel/v{{ kernel_version_major }}.x/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
-     dest: "{{ rpmbuild_sources_dir }}"
+    url: "https://cdn.kernel.org/pub/linux/kernel/v{{ kernel_version_major }}.x/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
+    dest: "{{ rpmbuild_sources_dir }}"
+  when: not kernel_source_file.stat.exists
+
+- name: Verifing if the minor Linux kernel source code patches have already been downloaded
+  stat:
+    path: "{{ rpmbuild_sources_dir }}/patch-{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}.xz"
+  register: patches_source_file
 
 - name: "Downloading the Linux kernel {{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }} patches"
   get_url:
     url: "https://cdn.kernel.org/pub/linux/kernel/v{{ kernel_version_major }}.x/patch-{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}.xz"
     dest: "{{ rpmbuild_sources_dir }}"
+  when: not patches_source_file.stat.exists
 
 - name: Making a directory to extract the Linux kernel source code into
   file:
