@@ -49,6 +49,14 @@ $ ansible-playbook --become-method sudo --ask-become-pass --extra-vars kernel_ty
 $ ansible-playbook --skip-tags become site.yml
 ```
 
+## Contributing
+
+For rebasing kernels and removing patches, use this Bash command to get all of the changelogs since the last release of the kernel used in ansible-role-fedora-kernel-lts. A lot of Fedora patches get backported into the upstream kernel. The example grabs all of the changelogs for 4.14.26 through 4.14.52.
+
+```
+$ for i in $(seq 26 52)`; do curl https://cdn.kernel.org/pub/linux/kernel/v4.x/ChangeLog-4.14.$i >> /tmp/kernel.changelog; done
+```
+
 ## License
 
 GPLv3
