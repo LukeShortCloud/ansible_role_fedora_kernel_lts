@@ -66,11 +66,17 @@
     dest: "{{ rpmbuild_sources_dir }}/kernel"
     state: directory
 
+- name: Verifing if the Linux kernel source has already been extracted
+  stat:
+    path: "{{ rpmbuild_sources_dir }}/patch-{{ kernel_version_major }}.{{ kernel_version_minor }}"
+  register: kernel_source_directory
+
 - name: Extracting the Linux kernel source code
   unarchive:
     src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
     dest: "{{ rpmbuild_sources_dir }}"
     remote_src: true
+  when: kernel_source_directory.stat.isdir is defined and kernel_source_directory.stat.isdir
 
 # This is required to be pre-built for the RPM per: https://fedoraproject.org/wiki/Kernel/Rawhide
 - name: Building the perf-man documentation
