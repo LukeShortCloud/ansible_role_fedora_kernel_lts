@@ -644,14 +644,8 @@ Patch619: input-rmi4-remove-the-need-for-artifical-IRQ.patch
 # Headed upstream
 Patch621: drm-i915-Boost-GPU-clocks-if-we-miss-the-pageflip-s-vblank.patch
 
-# rhbz 1509461
-Patch625: v3-2-2-Input-synaptics---Lenovo-X1-Carbon-5-should-use-SMBUS-RMI.patch
-
 # rhbz 1462175
 Patch628: HID-rmi-Check-that-a-device-is-a-RMI-device-before-c.patch
-
-# rhbz1514969
-Patch633: 0001-platform-x86-dell-laptop-Filter-out-spurious-keyboar.patch
 
 # rhbz 1539238
 Patch635: Add-support-for-One-by-Wacom-CTL-472-CTL-672.patch
@@ -2216,6 +2210,11 @@ fi
 #
 #
 %changelog
+* Thu Jun 28 2018 Luke Short <ekultails@gmail.com> - 4.14.52-300
+- Linux v4.14.52
+- Removed the "Input: synaptics - Lenovo X1 Carbon 5 should use SMBUS/RMI" patch (fixed upstream)
+- Removed the "platform/x86: dell-laptop: Filter out spurious keyboard backlight change events" patch (fixed upstream)
+
 * Tue Mar 06 2018 Luke Short <ekultails@gmail.com> - 4.14.25-300
 - Linux v4.14.25
 - Removed the "drm/qxl: replace QXL_INFO with DRM_DEBUG_DRIVER" patch (fixed upstream)

@@ -2,7 +2,7 @@
 # Follow semantic versioning for the kernel.
 kernel_version_major: 4
 kernel_version_minor: 14
-kernel_version_patch: 25
+kernel_version_patch: 52
 kernel_version: "{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}"
 git_repository_kernel: https://src.fedoraproject.org/rpms/kernel.git
 # This is the last stable Linux 4.14 release for Fedora 27.
