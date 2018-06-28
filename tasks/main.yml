@@ -34,7 +34,7 @@
     force: true
 
 - name: Installing build dependencies for the Linux kernel
-  shell: "dnf builddep {{ rpmbuild_sources_dir }}/kernel.spec"
+  shell: "dnf -y builddep {{ rpmbuild_sources_dir }}/kernel.spec"
   become: true
   tags:
     - become
