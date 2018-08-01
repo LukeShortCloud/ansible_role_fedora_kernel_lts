@@ -76,7 +76,7 @@
     src: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.xz"
     dest: "{{ rpmbuild_sources_dir }}"
     remote_src: true
-  when: kernel_source_directory.stat.isdir is defined and kernel_source_directory.stat.isdir
+#  when: kernel_source_directory.stat.isdir is defined and kernel_source_directory.stat.isdir
 
 # This is required to be pre-built for the RPM per: https://fedoraproject.org/wiki/Kernel/Rawhide
 - name: Building the perf-man documentation
