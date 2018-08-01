@@ -132,7 +132,7 @@
             (kernel_lts_config.stat.exists)
 
 - name: Building the Linux kernel RPM
-  shell: "rpmbuild -bb --with baseonly --without debuginfo {{ rpmbuild_sources_dir }}/kernel.spec"
+  shell: "rpmbuild {{ rpmbuild_options }} --with baseonly --without debuginfo {{ rpmbuild_sources_dir }}/kernel.spec"
   register: rpmbuild_output
 
 - debug:
