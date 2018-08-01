@@ -24,7 +24,7 @@
     repo: "{{ git_repository_kernel }}"
     dest: "{{ rpmbuild_sources_dir }}"
     version: "{{ git_branch_kernel }}"
-    force: yes
+    force: true
 
 - name: Copying over the custom kernel.spec
   template:
@@ -107,29 +107,29 @@
   copy:
     src: "acs_override_{{ kernel_type }}.patch"
     dest: "{{ rpmbuild_sources_dir }}"
-    force: True
+    force: true
   # This is only supported for the LTS kernel currently.
   when: kernel_type == "lts"
 
 - block:
-  - name: Verifying if the kernel 4.14 configuraiton file already exists
-    stat:
-      path: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
-    register: kernel_lts_config
+    - name: Verifying if the kernel 4.14 configuraiton file already exists
+      stat:
+        path: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
+      register: kernel_lts_config
 
-  - name: Copying over the kernel-x86_64.config file
-    copy:
-      src: kernel-x86_64_lts_4.14.config
-      dest: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
-    when: not kernel_lts_config.stat.exists
+    - name: Copying over the kernel-x86_64.config file
+      copy:
+        src: kernel-x86_64_lts_4.14.config
+        dest: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
+      when: not kernel_lts_config.stat.exists
 
-  - name: Adding new configuration options for the kernel 4.14
-    lineinfile:
-      path: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
-      line: "CONFIG_INFINIBAND_ADDR_TRANS=y"
-  when: (kernel_version_major == 4) and
-        (kernel_version_minor == 14) and
-        (kernel_lts_config.stat.exists)
+    - name: Adding new configuration options for the kernel 4.14
+      lineinfile:
+        path: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
+        line: "CONFIG_INFINIBAND_ADDR_TRANS=y"
+      when: (kernel_version_major == 4) and
+            (kernel_version_minor == 14) and
+            (kernel_lts_config.stat.exists)
 
 - name: Building the Linux kernel RPM
   shell: "rpmbuild -bb --with baseonly --without debuginfo {{ rpmbuild_sources_dir }}/kernel.spec"
