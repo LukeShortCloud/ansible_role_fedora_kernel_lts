@@ -108,8 +108,17 @@
     src: "acs_override_{{ kernel_type }}.patch"
     dest: "{{ rpmbuild_sources_dir }}"
     force: true
-  # This is only supported for the LTS kernel currently.
+  # This is only supported for our custom LTS kernel currently.
   when: kernel_type == "lts"
+
+- name: Copying over the process_config.sh script
+  copy:
+    src: "process_configs.sh"
+    dest: "{{ rpmbuild_sources_dir }}"
+    mode: 0755
+    force: true
+  when: (kernel_version_major == 4) and
+        (kernel_version_minor == 14)
 
 - block:
     - name: Verifying if the kernel 4.14 configuraiton file already exists
@@ -125,14 +134,17 @@
 
     - name: Adding new configuration options for the kernel 4.14
       lineinfile:
-        path: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
+        path: "{{ rpmbuild_sources_dir }}/{{ item }}"
         line: "CONFIG_INFINIBAND_ADDR_TRANS=y"
+      loop:
+        - kernel-x86_64.config
+        - kernel-x86_64-debug.config
       when: (kernel_version_major == 4) and
             (kernel_version_minor == 14) and
             (kernel_lts_config.stat.exists)
 
 - name: Building the Linux kernel RPM
-  shell: "rpmbuild {{ rpmbuild_options }} {{ rpmbuild_sources_dir }}/kernel.spec"
+  shell: "rpmbuild {{ rpmbuild_options }} --target x86_64 {{ rpmbuild_sources_dir }}/kernel.spec"
   register: rpmbuild_output
 
 - debug:

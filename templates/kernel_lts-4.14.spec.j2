@@ -484,6 +484,8 @@ Source41: generate_debug_configs.sh
 
 Source42: check_configs.awk
 
+Source43: process_configs.sh
+
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
 Source1000: kernel-local
@@ -1291,29 +1293,21 @@ CheckConfigs() {
      fi
 }
 
-cp %{SOURCE42} .
-# Generate the new kernel configuration for x86_64 only
-i="kernel-{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}-x86_64.config"
-cp -f $i temp-$i
-cp -f $i .config
-Arch='x86_64'
-make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
+cp %{SOURCE43} .
+OPTS=""
 %if %{listnewconfig_fail}
-if [ -s .newoptions ]; then
-  cat .newoptions
-  exit 1
-fi
+	OPTS="$OPTS -n"
 %endif
-rm -f .newoptions
-make ARCH=$Arch oldnoconfig
-echo "# $Arch" > configs/$i
-cat .config >> configs/$i
 %if %{configmismatch_fail}
-CheckConfigs configs/$i temp-$i
+	OPTS="$OPTS -c"
 %endif
-rm temp-$i
+./process_configs.sh $OPTS kernel %{rpmversion}
+
 # end of kernel config
 %endif
+
+cd ..
+# End of Configs stuff
 
 # get rid of unwanted files resulting from patch fuzz
 find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
@@ -1378,7 +1372,7 @@ BuildKernel() {
     # and now to start the build process
 
     make -s mrproper
-    cp configs/$Config .config
+    cp -f $Config .config
 
     %if %{signkernel}%{signmodules}
     cp %{SOURCE11} certs/.
