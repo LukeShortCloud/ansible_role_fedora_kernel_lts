@@ -1,6 +1,8 @@
-# ansible-role-fedora-kernel-lts
+# ansible_role_fedora_kernel_lts
 
 An Ansible role for automating the build of the LTS Linux kernel RPMs for Fedora.
+
+Builds of this kernel are published to a Fedora Copr repository. Instructions on how to enable the repository and install the kernel can be found [here](https://copr.fedorainfracloud.org/coprs/ekultails/fedora_kernel_lts/).
 
 ## Requirements
 
