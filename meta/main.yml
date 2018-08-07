@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: Luke Short
+  description: An Ansible role for automating the build of the LTS Linux kernel RPMs for Fedora.
+  issue_tracker_url: https://github.com/ekultails/ansible_role_fedora_kernel_lts/issues
+  license: GPLv3
+  min_ansible_version: 2.6
+  platforms:
+    - name: Fedora
+      versions:
+      - 27
+      - 28
+  galaxy_tags:
+    - fedora
+    - kernel
+    - lts
+    - long-term
+    - support
+    - linux
+
+dependencies: []
