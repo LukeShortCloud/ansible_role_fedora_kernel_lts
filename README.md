@@ -39,12 +39,6 @@ None.
 $ ansible-playbook --become-method sudo --ask-become-pass site.yml
 ```
 
-* Alternatively, build a newer stable release of the Linux kernel.
-
-```
-$ ansible-playbook --become-method sudo --ask-become-pass --extra-vars kernel_type=stable site.yml
-```
-
 * When re-running the Playbook, installing the dependencies can be skipped.
 
 ```
