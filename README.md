@@ -6,7 +6,7 @@ Builds of this kernel are published to a Fedora Copr repository. Instructions on
 
 ## Requirements
 
-* >= Ansible 2.6
+* Ansible \>= 2.6
 
 ## Role Variables
 
