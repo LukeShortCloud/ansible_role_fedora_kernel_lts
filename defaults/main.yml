@@ -5,3 +5,6 @@ kernel_type: lts
 # -bb = Only build binary RPMs.
 # -bs = Only build source RPMs.
 rpmbuild_options: "-bb --with baseonly --without debuginfo"
+rpmbuild_dir: "{{ ansible_user_dir }}/rpmbuild"
+rpmbuild_sources_dir: "{{ rpmbuild_dir }}/SOURCES"
+kernel_rpm_revision: 300

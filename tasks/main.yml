@@ -83,11 +83,13 @@
   shell: make man
   args:
     chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/"
+    creates: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/perf.1"
 
 - name: Building the kvm_stat documentation
   shell: make man
   args:
     chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/kvm/kvm_stat/"
+    creates: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/kvm/kvm_stat/kvm_stat.1"
 
 # This is not mentioned in the Rawhide documentation from above.
 # It is required as defined in the "scripts/generate-perf-man.sh"
@@ -102,6 +104,7 @@
   shell: "tar -czvf {{ rpmbuild_sources_dir }}/perf-man-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.gz *.1"
   args:
     chdir: "{{ rpmbuild_sources_dir }}/linux-{{ kernel_version_major }}.{{ kernel_version_minor }}/tools/perf/Documentation/"
+    creates: "{{ rpmbuild_sources_dir }}/perf-man-{{ kernel_version_major }}.{{ kernel_version_minor }}.tar.gz"
 
 - name: Copying over the ACS override patch
   copy:
@@ -145,6 +148,8 @@
 
 - name: Building the Linux kernel RPM
   shell: "rpmbuild {{ rpmbuild_options }} --target x86_64 {{ rpmbuild_sources_dir }}/kernel.spec"
+  args:
+    creates: "{{ rpmbuild_dir }}/RPMS/x86_64/kernel-{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}-300.fc28.x86_64.rpm"
   register: rpmbuild_output
 
 - debug:
