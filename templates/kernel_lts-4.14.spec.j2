@@ -44,7 +44,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2204,6 +2204,9 @@ fi
 #
 #
 %changelog
+* Wed Sep 05 2018 Luke Short <ekultails@gmail.com> - 4.14.{{ kernel_version_patch }}-300
+- Linux v4.14.{{ kernel_version_patch }}
+
 * Mon Aug 06 2018 Luke Short <ekultails@gmail.com> - 4.14.60-301
 - Rename the "pyhon-perf" package to "python2-perf" to align with new Fedora package naming standards for Python
 

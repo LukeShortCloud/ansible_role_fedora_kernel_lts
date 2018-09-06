@@ -6,7 +6,7 @@ Builds of this kernel are published to a Fedora Copr repository. Instructions on
 
 ## Requirements
 
-* Ansible 2.4
+* >= Ansible 2.6
 
 ## Role Variables
 
@@ -24,13 +24,13 @@ None.
 
 ## Example Playbook
 
-* An example "site.yml" Playbook file.
+* An example "site.yml" Playbook file. By default, RPMs will be compiled and created.
 
 ```
 ---
 - hosts: build_host
   roles:
-    - ansible-role-fedora-kernel-lts
+    - ansible_role_fedora_kernel_lts
 ```
 
 * Run the Playbook as a non-root user with privileges to install build dependencies.
@@ -43,6 +43,12 @@ $ ansible-playbook --become-method sudo --ask-become-pass site.yml
 
 ```
 $ ansible-playbook --skip-tags become site.yml
+```
+
+* Optionally only build the source RPM.
+
+```
+$ ansible-playbook --skip-tags become --extra-vars rpmbuild_options="-bs --with baseonly --without debuginfo" site.yml
 ```
 
 ## Testing
