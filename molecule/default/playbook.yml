@@ -1,6 +1,8 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    rpmbuild_options: "-bb --with baseonly --without debuginfo"
   roles:
     - role: ansible_role_fedora_kernel_lts
   post_tasks:
