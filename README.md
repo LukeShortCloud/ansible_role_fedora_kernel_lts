@@ -10,7 +10,6 @@ Builds of this kernel are published to a Fedora Copr repository. Instructions on
 
 ## Role Variables
 
-* kernel_type = "lts" or "stable."
 * kernel_version_major = The major Linux kernel version.
 * kernel_version_minor = The minor Linux kernel version.
 * kernel_version_patch = The patch Linux kernel version.

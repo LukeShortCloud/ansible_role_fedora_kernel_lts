@@ -1,6 +1,6 @@
 ---
 - include_vars:
-    file: "defaults/{{ kernel_type }}.yml"
+    file: "defaults/4.14.yml"
 
 # Packages listed from here will be installed:
 # https://fedoraproject.org/wiki/Building_a_custom_kernel
@@ -28,7 +28,7 @@
 
 - name: Copying over the custom kernel.spec
   template:
-    src: "kernel_{{ kernel_type }}-{{ kernel_version_major }}.{{ kernel_version_minor }}.spec.j2"
+    src: "kernel_lts-{{ kernel_version_major }}.{{ kernel_version_minor }}.spec.j2"
     dest: "{{ rpmbuild_sources_dir }}/kernel.spec"
     backup: true
     force: true
@@ -108,11 +108,9 @@
 
 - name: Copying over the ACS override patch
   copy:
-    src: "acs_override_{{ kernel_type }}.patch"
+    src: "acs_override_lts.patch"
     dest: "{{ rpmbuild_sources_dir }}"
     force: true
-  # This is only supported for our custom LTS kernel currently.
-  when: kernel_type == "lts"
 
 - name: Copying over the process_config.sh script
   copy:

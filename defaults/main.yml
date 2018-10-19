@@ -1,6 +1,4 @@
 ---
-# Build the "lts" Linux kernel.
-kernel_type: lts
 # -ba = Build binary and source RPMs.
 # -bb = Only build binary RPMs.
 # -bs = Only build source RPMs.
