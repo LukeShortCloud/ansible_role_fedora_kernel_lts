@@ -24,7 +24,7 @@ None.
 
 ## Example Playbook
 
-* An example "site.yml" Playbook file. By default, RPMs will be compiled and created.
+* An example "site.yml" Playbook file. By default, source RPMs will built.
 
 ```
 ---
@@ -33,7 +33,7 @@ None.
     - ansible_role_fedora_kernel_lts
 ```
 
-* Run the Playbook as a non-root user with privileges to install build dependencies.
+* Run the Playbook as a non-root user with privileges to install build dependencies and then build the RPMs.
 
 ```
 $ ansible-playbook --become-method sudo --ask-become-pass site.yml
@@ -45,10 +45,10 @@ $ ansible-playbook --become-method sudo --ask-become-pass site.yml
 $ ansible-playbook --skip-tags become site.yml
 ```
 
-* Optionally only build the source RPM.
+* Optionally build the binary RPM.
 
 ```
-$ ansible-playbook --skip-tags become --extra-vars rpmbuild_options="-bs --with baseonly --without debuginfo" site.yml
+$ ansible-playbook --skip-tags become --extra-vars rpmbuild_options="-bb --with baseonly --without debuginfo" site.yml
 ```
 
 ## Testing
