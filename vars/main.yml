@@ -1,4 +1,6 @@
 ---
+kernel_version_major: 4
+kernel_version_minor: 19
 build_package_dependencies:
   - fedpkg
   - fedora-packager

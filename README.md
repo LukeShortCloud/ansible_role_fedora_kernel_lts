@@ -10,8 +10,13 @@ Builds of this kernel are published to a Fedora Copr repository. Instructions on
 
 ## Role Variables
 
+Immutable (should not be changed unless rebasing ontop a new `X.Y` kernel):
+
 * kernel_version_major = The major Linux kernel version.
 * kernel_version_minor = The minor Linux kernel version.
+
+Mutable (user configurable):
+
 * kernel_version_patch = The patch Linux kernel version.
 * git_repository_kernel = The Git repository to use for the upstream Fedora kernel.
 * git_branch_kernel = The branch, commit, or tag to checkout from the Git repository.
@@ -59,10 +64,10 @@ $ molecule destroy
 
 ## Contributing
 
-For rebasing kernels and removing patches, use this Bash command to get all of the changelogs since the last release of the kernel used in ansible-role-fedora-kernel-lts. A lot of Fedora patches get backported into the upstream kernel. The example grabs all of the changelogs for 4.14.26 through 4.14.52.
+For rebasing kernels and removing patches, use this Bash command to get all of the changelogs since the last release of the kernel used in ansible-role-fedora-kernel-lts. A lot of Fedora patches get backported into the upstream kernel. The example grabs all of the changelogs for 4.19.15 through 4.19.20.
 
 ```
-$ for i in $(seq 26 52); do curl https://cdn.kernel.org/pub/linux/kernel/v4.x/ChangeLog-4.14.$i >> /tmp/kernel.changelog; done
+$ for i in $(seq 15 20); do curl https://cdn.kernel.org/pub/linux/kernel/v4.x/ChangeLog-4.19.$i >> /tmp/kernel.changelog; done
 ```
 
 ## License
