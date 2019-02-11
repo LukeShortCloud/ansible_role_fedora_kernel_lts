@@ -1,6 +1,6 @@
 ---
 - include_vars:
-    file: "defaults/4.14.yml"
+    file: "defaults/{{ kernel_version_major }}.{{ kernel_version_minor }}.yml"
 
 # Packages listed from here will be installed:
 # https://fedoraproject.org/wiki/Building_a_custom_kernel
@@ -120,29 +120,6 @@
     force: true
   when: (kernel_version_major == 4) and
         (kernel_version_minor == 14)
-
-- block:
-    - name: Verifying if the kernel 4.14 configuraiton file already exists
-      stat:
-        path: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
-      register: kernel_lts_config
-
-    - name: Copying over the kernel-x86_64.config file
-      copy:
-        src: kernel-x86_64_lts_4.14.config
-        dest: "{{ rpmbuild_sources_dir }}/kernel-x86_64.config"
-      when: not kernel_lts_config.stat.exists
-
-    - name: Adding new configuration options for the kernel 4.14
-      lineinfile:
-        path: "{{ rpmbuild_sources_dir }}/{{ item }}"
-        line: "CONFIG_INFINIBAND_ADDR_TRANS=y"
-      loop:
-        - kernel-x86_64.config
-        - kernel-x86_64-debug.config
-      when: (kernel_version_major == 4) and
-            (kernel_version_minor == 14) and
-            (kernel_lts_config.stat.exists)
 
 - name: Building the Linux kernel RPM
   shell: "rpmbuild {{ rpmbuild_options }} --target x86_64 {{ rpmbuild_sources_dir }}/kernel.spec"
