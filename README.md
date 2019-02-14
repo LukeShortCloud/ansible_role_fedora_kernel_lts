@@ -52,7 +52,7 @@ $ ansible-playbook --skip-tags become site.yml
 * Optionally build the binary RPM.
 
 ```
-$ ansible-playbook --skip-tags become --extra-vars rpmbuild_options="-bb --with baseonly --without debuginfo" site.yml
+$ ansible-playbook --skip-tags become --extra-vars rpmbuild_options="-bb --with headers --without cross_headers --without debug --without debuginfo --without pae" site.yml
 ```
 
 ## Testing
