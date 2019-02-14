@@ -626,9 +626,6 @@ Patch507: 0001-HID-i2c-hid-override-HID-descriptors-for-certain-dev.patch
 # Patches from 4.20 fixing black screen on CHT devices with i915.fastboot=1
 Patch508: cherrytrail-pwm-lpss-fixes.patch
 
-# rhbz 1526312 (accelerometer part of the bug), patches pending upstream
-Patch510: iio-accel-kxcjk1013-Add-more-hardware-ids.patch
-
 # rhbz 1645070 patch queued upstream for merging into 4.21
 Patch516: asus-fx503-keyb.patch
 
@@ -1902,7 +1899,11 @@ fi
 #
 %changelog
 #* Mon Feb 11 2019 Luke Short <ekultails@gmail.com> - 4.19.{{ kernel_version_patch }}-{{ kernel_rpm_revision }}
-#- Linux v4.14.{{ kernel_version_patch }}
+#- Linux v4.19.{{ kernel_version_patch }}
+
+* Tue Feb 12 2019 Luke Short <ekultails@gmail.com> - 4.19.21-1
+- Linux v4.19.21
+- Remove patch "iio: accel: kxcjk1013: Add KIOX010A ACPI Hardware-ID" (fixed upstream)
 
 * Mon Feb 11 2019 Luke Short <ekultails@gmail.com> - 4.19.20-1
 - Linux v4.19.20

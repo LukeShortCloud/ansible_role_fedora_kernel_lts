@@ -1,5 +1,5 @@
 ---
-kernel_version_patch: 20
+kernel_version_patch: 21
 kernel_version: "{{ kernel_version_major }}.{{ kernel_version_minor }}.{{ kernel_version_patch }}"
 git_repository_kernel: https://src.fedoraproject.org/rpms/kernel.git
 # This is the last stable Linux 4.19 release for Fedora 29.
